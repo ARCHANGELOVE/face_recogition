@@ -7,12 +7,13 @@ from face_detector import FaceDetector
 from faces_database import FacesDatabase
 from face_identifier import FaceIdentifier
 from model_api.performance_metrics import PerformanceMetrics
-source = "videos/video1.mp4"
+source = "videos/vengkat.mp4"
 device = 'CPU'
 faceDETECT = "model_2022_3/face-detection-retail-0005.xml"
 faceLANDMARK = "model_2022_3/landmarks-regression-retail-0009.xml"
 faceIDENTIFY = "model_2022_3/face-reidentification-retail-0095.xml"
 #face IDENTIFY = "model 2022 3/facenet.xml"
+
 class FrameProcessor:
     QUEUE_SIZE = 16
     log.info('OpenVINO Runtime')
@@ -39,7 +40,7 @@ class FrameProcessor:
         face_identities, unknowns = self.face_identifier.infer((frame, rois, landmarks ) )
         return [rois, landmarks, face_identities]
     
-def draw_face_detection (frame, frame_processor, detections):
+def draw_face_detection(frame, frame_processor, detections):
     size = frame.shape[:2]
     for roi, landmarks, identity in zip (*detections):
         text = frame_processor.face_identifier.get_identity_label(identity.id)
@@ -56,7 +57,7 @@ def draw_face_detection (frame, frame_processor, detections):
         image_recognizer (frame, text, identity, face_point, 0.75)
     return frame
 
-def image_recognizer (frame, text, identity, face_point, threshold):
+def image_recognizer(frame, text, identity, face_point, threshold):
     xmin, ymin = face_point
     if identity.id != FaceIdentifier. UNKNOWN_ID:
         if (1-identity.distance) > threshold:
